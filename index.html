@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body>
+    <p>Ejercicios</p>
+    <h1>metodo BISECCION</h1>
+    <img src="enun.jpg" alt="">
+    <h2>ejer 1 por BISECCION</h2>
+    <img src="1.JPG" alt="">
+    <h2>ejer 2 por BISECCION</h2>
+    <img src="2.jpg" alt="">
+    <h2>ejer 3 por BISECCION</h2>
+    <img src="3.jpg" alt="">
+    <p>PROGRAMA</p>
+   <pre>
+    import numpy as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    
+    def f(x):
+      return 3+3*np.sin(x)-0.5*x**3#EJERCICIO 1
+      #return x**3-8*x**2 +17*x+np.sqrt(x)-10   #EJERCICIO 2
+      #return x**2-5*x*np.sin(3*x)+3 # ejercicio 3
+    def Biseccion(a, b, tol):
+      res = pd.DataFrame(columns=['a', 'b', 'm', 'f(a)', 'f(b)', 'f(m)'])
+      i = 0
+      while(True):
+        m = (a + b) / 2
+        res.loc[i] = [a, b, m, f(a), f(b), f(m)]
+        i += 1
+        if(f(a) * f(m) < 0):
+          b = m
+        elif(f(m) * f(b) < 0):
+          a = m
+        else:
+          print("Se encontró una solucion real de la ecuacion: x =", m)
+          break
+        
+        if(abs(f(m)) < tol):
+          break
+      
+      print(res)
+      print("Raiz aproximada: x =", m)
+    
+      #GRÁFICA
+      x = np.linspace(-10, 30, 100)
+      y = f(x)
+    
+      plt.axhline(0, color="black")
+      plt.axvline(0, color="black")
+      plt.plot(x, y, color="blue")
+      plt.plot(m, f(m), 'o', color="red")
+      plt.show()
+    
+    Biseccion(a=2, b=2.4, tol=0.00005)
+   </pre>
+   <h1>METODO SECANTE</h1>
+   <img src="enun.jpg" alt="">
+   <h2>ejer 1 por SECANTE</h2>
+   <img src="11.JPG" alt="">
+   <h2>ejer 2 por SECANTE</h2>
+   <img src="22.JPG" alt="">
+   <h2>ejer 3 por SECANTE</h2>
+   <img src="33.JPG">
+   <pre>
+    #metodo secante
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    
+    def f(x):
+      #return 3+3*np.sin(x)-0.5*x**3#EJERCICIO 1
+      #return x**3-8*x**2 +17*x+np.sqrt(x)-10   #EJERCICIO 2
+      return x**2-5*x*np.sin(3*x)+3 # ejercicio 3
+    
+    def Secante(x0, x, tol):
+      res = pd.DataFrame(columns=['x', 'f(x)'])
+      res.loc[0] = [x0, f(x0)]
+      res.loc[1] = [x, f(x)]
+      i = 2
+      while(abs(f(x)) > tol):
+        x1 = x
+        x = x1 - ((f(x1) * (x0 - x1))/(f(x0) - f(x1)))
+        res.loc[i] = [x, f(x)]
+        i += 1
+        x0 = x1
+      print(res)
+      print("Raiz aproximada de x = ", x)
+    
+      xi = np.linspace(-5, 5, 100)
+      yi = f(xi)
+    
+      plt.axhline(0, color="black")
+      plt.axvline(0, color="black")
+      plt.title("Secante")
+      plt.plot(xi, yi, color="blue", label="Función")
+      plt.plot(x, f(x), marker='o', color="red", label="Raíz Aproximada")
+      plt.legend()
+    
+      plt.show()
+    Secante(2, 2.2, 0.00005)
+   </pre>
+
+   <h1>metodo NEWTON RAPHSON</h1>
+   <img src="enun.jpg" alt="">
+   <h2>ejer 1 por NEWTON RAPHSON</h2>
+   <img src="111.JPG" alt="">
+   <h2>ejer 2 por NEWTON RAPHSON</h2>
+   <img src="222.jpg" alt="">
+   <h2>ejer 3 por NEWTON RAPHSON</h2>
+   <img src="333.JPG">
+   <pre>
+    #METODO NEWTON RAPHSON
+    import numpy as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import sympy as sp
+    import math
+    
+    def NewtonRaphson(f, xi, tol):
+      x = sp.Symbol('x')
+      f = sp.sympify(f)
+      df = sp.diff(f, x)
+    
+      res = pd.DataFrame(columns = ["x", "f(x)", "f'(x)"])
+      i = 0
+      while(abs(f.evalf(subs={x:xi})) > tol):
+        F = f.evalf(subs={x:xi})
+        DF = df.evalf(subs={x:xi})
+        res.loc[i] = [xi, F, DF]
+        i += 1
+        xi = xi - (F / DF)
+      F = f.evalf(subs={x:xi})
+      DF = df.evalf(subs={x:xi})
+      res.loc[i] = [xi, F, DF]
+      print(res)
+      print("Raíz Aproximada de x =", xi)
+    
+      x_i = np.linspace(-5, 5, 100)
+      y_i = np.array([f.evalf(subs={x:x_i[i]}) for i in range(len(x_i))])
+    
+      plt.axhline(0, color="black")
+      plt.axvline(0, color="black")
+      plt.title("Newton - Raphson")
+      plt.plot(x_i, y_i, color="blue", label="Función")
+      plt.plot(xi, f.evalf(subs={x:xi}), marker="o", color="red", label="Raíz Aproximada")
+      plt.legend()
+    
+      plt.show()
+    
+    f = input("Función f(x): ")
+    x0 = float(input("Valor de x0: "))
+    tol = float(input("Tolerancia: "))
+    NewtonRaphson(f, x0, tol)
+   </pre>
+
+
+</body>
+
+</html>
